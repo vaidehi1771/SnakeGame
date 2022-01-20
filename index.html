@@ -1,0 +1,193 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Untitled Document</title>
+<style>
+	#mySnake
+	{
+		position:absolute;
+		left:100px;
+		top:100px;
+	}
+	#myApple
+	{
+		position:absolute;
+		left:500px;
+		top:300px;
+	}
+</style>
+<script>
+	var leftPoint = 100;
+	var topPoint = 100;
+	var c;
+	var ah = 21;
+	var aw = 21;
+	var sh = 84;
+	var sw = 84;
+	var al=0;
+	var at = 0;
+	var scoreTotal = 0;
+	var lifeAvailable = 3;
+	var speed = 10.0;
+	var jumpPixel = 1;
+	function moveRight()
+	{
+		document.getElementById("mySnake").src = "snakeR.png";
+		stopSnake();
+		c = setInterval(moveRightNew,speed);
+		
+	}
+	function moveRightNew()
+	{
+		
+		leftPoint+=jumpPixel;
+		checkForPoint();
+		img = document.getElementById("mySnake");
+		img.style.left = leftPoint+"px";
+	}
+	
+	function moveLeft()
+	{
+		document.getElementById("mySnake").src = "snakeL.png";
+		stopSnake();
+		c = setInterval(moveLeftNew,speed);s
+		
+	}
+	function moveLeftNew()
+	{
+		leftPoint-=jumpPixel;
+		checkForPoint();
+		img = document.getElementById("mySnake");
+		img.style.left = leftPoint+"px";
+	}
+	
+	function moveTop()
+	{
+		document.getElementById("mySnake").src = "snakeT.png";
+		stopSnake();
+		c = setInterval(moveTopNew,speed);
+		
+	}
+	function moveTopNew()
+	{
+		topPoint-=jumpPixel;
+		checkForPoint();
+		img = document.getElementById("mySnake");
+		img.style.top = topPoint+"px";
+	}
+	function moveBottom()
+	{
+		document.getElementById("mySnake").src = "snakeB.png";
+		stopSnake();
+		c = setInterval(moveBottomNew,speed);
+		
+	}
+	function moveBottomNew()
+	{
+		topPoint+=jumpPixel;
+		checkForPoint();
+		img = document.getElementById("mySnake");
+		img.style.top = topPoint+"px";
+	}
+	
+	function stopSnake()
+	{
+		clearInterval(c);
+	}
+	function randomApple()
+	{
+		al = (Math.random()*(screen.availWidth-200))+100;
+		document.getElementById("myApple").style.left = al+"px";
+	at = (Math.random()*(screen.availHeight-200))+100;
+	document.getElementById("myApple").style.top = at+"px";
+	
+		document.getElementById("scoreSpan").innerHTML = scoreTotal;
+		scoreTotal++;
+		if(scoreTotal%5==0)
+		{
+			speed = speed/2;
+			if(speed<1)
+			{
+				jumpPixel++;
+			}
+			document.getElementById("speedSpan").innerHTML = speed+" Sec, "+jumpPixel +"px";
+		}
+	}
+	function checkForPoint()
+	{
+		if(leftPoint<0 || leftPoint>screen.availWidth || topPoint<0 || topPoint > screen.availHeight)
+		{
+			document.bgColor = "red";
+			setTimeout(changeBG,30);
+			leftPoint = 500;
+			topPoint = 250;
+			speed=10;
+			jumpPixel = 1;
+			lifeAvailable--;
+			if(lifeAvailable==-1)
+			{
+				document.getElementById("mySnake").remove();
+				document.getElementById("myApple").remove();
+				stopSnake();
+				document.write("<center><br/><br/><br/><img src='gameOver.gif'/></center>");
+				document.write("<center><input type='button' onclick=\"window.location='index.html'\" value='Restart Game'/></center>");;
+			}
+			document.getElementById("lifeSpan").innerHTML = lifeAvailable;
+		}
+		if(leftPoint+sw>al && al+aw> leftPoint && topPoint+sh>at && at+ah > topPoint)
+		{
+			randomApple();
+		}
+	}
+	function move(e)
+	{
+		var event = window.event ? window.event : e;
+		if(event.keyCode==37)
+		{
+			moveLeft();
+		}
+		else if(event.keyCode==38)
+		{
+			moveTop();
+		}
+		else if(event.keyCode==39)
+		{
+			moveRight();
+		}
+		else if(event.keyCode==40)
+		{
+			moveBottom();
+		}
+	}
+	function changeBG()
+	{
+		document.bgColor = "white";
+	}
+</script>
+</head>
+
+<body onkeydown="move()">
+<div style="float:left">
+	<input type="button" value="Right" onclick="moveRight()">
+    <input type="button" value="Left" onclick="moveLeft()">
+    <input type="button" value="Top" onclick="moveTop()">
+    <input type="button" value="Bottom" onclick="moveBottom()">
+    <span id="result"></span>
+</div>
+<div style="float:right">
+	Current Speed = <span id="speedSpan">10</span>
+</div>
+<div style="float:right">
+	Total Score = <span id="scoreSpan">0</span>
+</div>
+<div style="float:right">
+	Total Life Remaining = <span id="lifeSpan">3</span>
+</div>
+<img id="mySnake" src="snakeR.png">
+<img id="myApple" src="apple.png">
+<script>
+	randomApple();
+</script>
+</body>
+</html>
